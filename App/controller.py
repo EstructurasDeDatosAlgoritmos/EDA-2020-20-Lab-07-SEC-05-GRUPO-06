@@ -37,13 +37,13 @@ recae sobre el controlador.
 #  Inicializacion del catalogo
 # ___________________________________________________
 
-
 def init():
     """
-    Llama la funcion de inicializacion del modelo.
+    Llama la funcion de inicializacion  del modelo.
     """
-
-    return None
+    # catalog es utilizado para interactuar con el modelo
+    analyzer = model.newAnalyzer()
+    return analyzer
 
 
 # ___________________________________________________
@@ -55,9 +55,27 @@ def loadData(analyzer, accidentsfile):
     """
     Carga los datos de los archivos CSV en el modelo
     """
-    
+    crimesfile = cf.data_dir + accidentsfile
+    input_file = csv.DictReader(open(accidentsfile, encoding="utf-8"),
+                                delimiter=",")
+    for crime in input_file:
+        model.addCrime(analyzer, crime)
     return analyzer
-
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
+
+
+def crimesSize(analyzer):
+    """
+    Numero de crimenes leidos
+    """
+    return model.crimesSize(analyzer)
+
+def getCrimesByDate(analyzer, Date):
+    """
+    Retorna el total de crimenes en un rango de fechas
+    """
+    Date = datetime.datetime.strptime(Date, '%Y-%m-%d')
+    return model.getCrimesByDate(analyzer, Date.date())
+
