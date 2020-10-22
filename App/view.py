@@ -88,7 +88,11 @@ while True:
 
 
     elif int(inputs[0]) == 4:
-        print("\nRequerimiento No 1 del reto 3: ")
+        print("\nBuscando accidentes antes de la fecha: ")
+        Date = input("Fecha (YYYY-MM-DD): ")
+        lst = controller.getPastAccidents(cont, Date)
+        total_acc = lt.size(lst)
+        print("\nTotal de accidentes antes de la fecha: " + str(lt.size(lst)))
 
     else:
         sys.exit(0)

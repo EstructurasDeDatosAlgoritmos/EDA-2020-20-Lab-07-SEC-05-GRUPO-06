@@ -47,11 +47,14 @@ def newAnalyzer():
     Retorna el analizador inicializado.
     """
     analyzer = {'accidents': None,
-                'dateIndex': None
+                'dateIndex': None,
+                'datePast': None
                 }
 
     analyzer['accidents'] = lt.newList('SINGLE_LINKED', compareIds)
     analyzer['dateIndex'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareDates)
+    analyzer['datePast'] = om.newMap(omaptype='BST',
                                       comparefunction=compareDates)
     return analyzer
 
@@ -63,6 +66,7 @@ def addAccident(analyzer, accident):
     """
     lt.addLast(analyzer['accidents'], accident)
     updateDateIndex(analyzer['dateIndex'], accident)
+    addAccidentR2(analyzer['datePast'], accident)
     return analyzer
 
 def updateDateIndex(map, accident):
@@ -128,6 +132,15 @@ def newSeverityEntry(severitygrp, accident):
     seventry['lstseverities'] = lt.newList('SINGLELINKED', compareSeverities)
     return seventry
 
+def addAccidentR2 (map, accident):
+    occurreddate = accident['End_Time']
+    AccID = accident['ID']
+    accidentdate = datetime.datetime.strptime(occurreddate, '%Y-%m-%d %H:%M:%S')
+    
+    om.put(map, accidentdate.utctimetuple(), AccID)
+    return 
+
+
 # ==============================
 # Funciones de consulta
 # ==============================
@@ -164,6 +177,14 @@ def getAccidentsByRange(analyzer, initialDate, finalDate):
     Retorna el numero de crimenes en un rago de fechas.
     """
     lst = om.values(analyzer['dateIndex'], initialDate, finalDate)
+    return lst
+
+def getPastAccidents(analyzer, date):
+    """
+    Retorna el numero de crimenes en un antes de una fecha.
+    """
+    lst = om.keys(analyzer['datePast'], om.minKey(analyzer['datePast']), date)
+    print(lst)
     return lst
 
 
