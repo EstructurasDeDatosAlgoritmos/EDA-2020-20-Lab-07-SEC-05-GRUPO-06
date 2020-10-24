@@ -24,6 +24,11 @@ import config as cf
 from App import model
 import datetime
 import csv
+from DISClib.DataStructures import listiterator as it
+from DISClib.ADT import list as lt 
+from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import map as m
+
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -44,7 +49,6 @@ def init():
     """
     analyzer = model.newAnalyzer()
     return analyzer
-    return None
 
 
 # ___________________________________________________
@@ -76,6 +80,7 @@ def loadData(analyzer, accidentsfile):
     return analyzer
 
 
+
 # ___________________________________________________
 #  Funciones para consultas
 # ___________________________________________________
@@ -86,8 +91,17 @@ def getAccidentsByRange(analyzer, initialDate, finalDate):
     """
     initialDate = datetime.datetime.strptime(initialDate, '%Y-%m-%d')
     finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
-    return model.getAccidentsByRange(analyzer, initialDate.date(),
+    lst_accidents= model.getAccidentsByRange(analyzer, initialDate.date(),
                                   finalDate.date())
+    return lst_accidents
+
+
+def cont_accidents(lst):
+    return(model.cont_accidents(lst))
+def severities(lst):
+    return (model.severities(lst))
+def getMaxSeverity(lst,hash_t):
+    return model.getMaxSeverity(lst,hash_t)
   
 def getPastAccidents(analyzer, fecha):
     """

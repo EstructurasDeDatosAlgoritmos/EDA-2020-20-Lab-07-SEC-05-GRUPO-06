@@ -25,6 +25,7 @@ from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
 from DISClib.DataStructures import linkedlistiterator as iterlk
 from DISClib.ADT import map as m
+from DISClib.DataStructures import listiterator as it
 import datetime
 import time
 assert config
@@ -54,7 +55,7 @@ def newAnalyzer():
                 }
 
     analyzer['accidents'] = lt.newList('SINGLE_LINKED', compareIds)
-    analyzer['dateIndex'] = om.newMap(omaptype='BST',
+    analyzer['dateIndex'] = om.newMap(omaptype='RBT',
                                       comparefunction=compareDates)
     analyzer['datePast'] = om.newMap(omaptype='BST',
                                       comparefunction=compareDates)
@@ -98,8 +99,8 @@ def newDataEntry(accident):
     binario.
     """
     entry = {'severityIndex': None, 'lstaccidents': None}
-    entry['severityIndex'] = m.newMap(numelements=30,
-                                     maptype='PROBING',
+    entry['severityIndex'] = m.newMap(numelements=100,
+                                     maptype='PROBING',#probar 
                                      comparefunction=compareSeverities)
     entry['lstaccidents'] = lt.newList('SINGLE_LINKED', compareDates)
     return entry
@@ -141,7 +142,6 @@ def addAccidentR2 (map, accident):
     
     om.put(map, accidentdate.utctimetuple(), AccID)
     return 
-
 
 # ==============================
 # Funciones de consulta
@@ -207,6 +207,72 @@ def mostAccInDate (lista):
         if counter > lastcounter:
             most = elementr
     return most
+
+
+
+#requerimiento 1
+
+def cont_accidents(lst):
+    iterator=it.newIterator(lst)
+    sum_accidents=0
+    while it.hasNext(iterator):
+        date=it.next(iterator)
+        sum_accidents=lt.size(date["lstaccidents"])+ sum_accidents
+    return sum_accidents
+
+def severities(lst):
+    severities=m.newMap(5,
+                                   maptype='CHAINING',
+                                   loadfactor=0.7,
+                                   comparefunction=compareSeverities)
+    iterator=it.newIterator(lst)
+    while it.hasNext(iterator):
+        date=it.next(iterator)
+        it2=it.newIterator(date["lstaccidents"])
+        while it.hasNext(it2):
+            accident=it.next(it2)
+            addSeverity(severities,accident)
+    return(severities)
+
+def addSeverity(map, severity):
+    """
+    Esta función adiciona una pelicula a la lista de peliculas publicadas
+    por una compañia.
+    Cuando se adiciona la pelicula se actualiza el promedio de dicha compañia
+    """
+    existseverity = m.contains(map, severity["Severity"])
+    if existseverity:
+         entry = m.get(map, severity["Severity"])
+         key=me.getKey(entry)
+         suma = me.getValue(entry)
+         m.put(map,key,int(suma)+1)
+    else:
+        m.put(map, severity["Severity"],1)
+
+
+def getMaxSeverity(lst,hash_t):
+    max_value=0
+    iterador=it.newIterator(lst)
+    while it.hasNext(iterador):
+        severidad_Value=it.next(iterador)
+        if severidad_Value>max_value:
+            max_value=severidad_Value
+    maxKey=None
+    key=0
+    while maxKey==None:
+        key=key+1
+        existentry=m.contains(hash_t,str(key))
+        if existentry:
+            entry=m.get(hash_t,str(key))
+            if me.getValue(entry)==max_value:
+                maxKey=me.getKey(entry)
+    return (maxKey,max_value)
+
+
+
+
+
+
 
 
 # ==============================

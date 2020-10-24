@@ -25,7 +25,9 @@ sys.setrecursionlimit(10**6)
 import config
 from DISClib.ADT import list as lt
 from App import controller
+from DISClib.ADT import map as m
 assert config
+
 
 """
 La vista se encarga de la interacción con el usuario.
@@ -57,6 +59,7 @@ def printMenu():
     print("2- Cargar información de accidentes")
     print("3- Conocer los accidentes en una fecha")
     print("4- Conocer los accidentes anteriores a una fecha")
+    print("5- Requerimiento 3")
     print("0- Salir")
     print("*******************************************")
 
@@ -86,9 +89,12 @@ while True:
         print("\nBuscando accidentes en una fecha: ")
         initialDate = input("Fecha (YYYY-MM-DD): ")
         lst = controller.getAccidentsByRange(cont, initialDate, initialDate)
-        print("\nTotal de accidentes en el dia: " + str(lt.size(lst)))
-
-
+        print("\nTotal de accidentes en el dia: " + str(controller.cont_accidents(lst)))
+        tabla=controller.severities(lst)
+        print(m.get(tabla,"1"))
+        print(m.get(tabla,"2"))
+        print(m.get(tabla,"3"))
+        print(m.get(tabla,"4"))
     elif int(inputs[0]) == 4:
         print("\nBuscando accidentes antes de la fecha: ")
         Date = input("Fecha (YYYY-MM-DD): ")
@@ -97,7 +103,23 @@ while True:
         total_acc = lt.size(lst)
         print("\nTotal de accidentes antes de la fecha: " + str(lt.size(lst)))
         print("\nFecha con mas accidentes: " + str(most))
+    elif int(inputs[0]) == 5:
+        print("\nRequerimiento No 3 del reto 3: ")
+        print("\nBuscando accidentes en una fecha: ")
+        initialDate = input("Fecha (YYYY-MM-DD): ")
+        FinalDate = input("Fecha (YYYY-MM-DD): ")
+        lst = controller.getAccidentsByRange(cont, initialDate, FinalDate)
+        # print(lst)
+        numero_accidentes=(controller.cont_accidents(lst))
+        print("el numero de accidentes entre "+ str(initialDate)+" y "+ str(FinalDate)+ " fue: "+str(numero_accidentes))
+        hash_t=controller.severities(lst)
+        lstValues=m.valueSet(hash_t)
+        key_value=controller.getMaxSeverity(lstValues,hash_t)
+        print("el mayor grado de severidad fue "+key_value[0]+" con "+str(key_value[1])+" accidentes")
 
     else:
         sys.exit(0)
 sys.exit(0)
+
+
+
