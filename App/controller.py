@@ -88,7 +88,7 @@ def getAccidentsByRange(analyzer, initialDate, finalDate):
     finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
     return model.getAccidentsByRange(analyzer, initialDate.date(),
                                   finalDate.date())
-
+  
 def getPastAccidents(analyzer, fecha):
     """
     Retorna el total de crimenes en un rango de fechas
