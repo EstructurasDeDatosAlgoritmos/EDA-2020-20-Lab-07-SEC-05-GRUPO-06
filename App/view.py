@@ -23,6 +23,7 @@
 import sys
 import config
 from DISClib.ADT import list as lt
+from DISClib.ADT import map as m
 from App import controller
 assert config
 
@@ -37,7 +38,10 @@ operación seleccionada.
 #  Ruta a los archivos
 # ___________________________________________________
 
-accidentsfile = 'Data/crime-utf8.csv'
+
+accidentsfile = 'us_accidents_small.csv'
+
+
 
 # ___________________________________________________
 #  Menu principal
@@ -52,6 +56,7 @@ def printMenu():
     print("2- Cargar información de accidentes")
     print("3- Requerimento 1")
     print("4- Requerimento 2")
+    print("6 - Requerimiento 4")
     print("0- Salir")
     print("*******************************************")
 
@@ -69,21 +74,23 @@ while True:
         cont = controller.init()
 
     elif int(inputs[0]) == 2:
-        print("\nCargando información de crimenes ....")
-        controller.loadData(cont, accidentsfile)
-        print('Crimenes cargados: ' + str(controller.crimesSize(cont)))
+        print("\nCargando información de accidentes ....")
+        controller.loadData(cont,accidentsfile)
+        print("\nInformacion caragada exitosamente")
+        print("Se cargaron",m.size(cont["accidents"]),"elementos1.")
 
     elif int(inputs[0]) == 3:
-        print("\nBuscando crimenes en un rango de fechas: ")
+        print("\nBuscando accidentes en una fecha: ")
+        initialDate = input("Fecha (YYYY-MM-DD): ")
+        lst = controller.getAccidentsByRange(cont, initialDate, initialDate)
+        print("\nTotal de accidentes en el dia: " + str(lt.size(lst)))
 
 
-    elif int(inputs[0]) == 4:
-        print("\nRequerimiento No 1 del reto 3: ")
-        print("\nNúmero de accidentes en una fecha: ")
-        Date = input("Fecha (YYYY-MM-DD): ")
-        numoffenses = controller.getCrimesByDate(cont, Date)
-        print("\nTotal de accidentes en esa fecha:  " +
-              str(numoffenses))
+    elif int (inputs [0])==6:
+        date1 = str (input(str("\nBuscando crimenes en un rango de fechas con el siguiente formato: ")))
+        date2 = str (input(str("\nBuscando crimenes en un rango de fechas con el siguiente formato: ")))
+        req = controller.getState(date1,date2,cont)
+        print (req)
 
     else:
         sys.exit(0)
