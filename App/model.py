@@ -23,8 +23,10 @@ import config
 from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
+from DISClib.DataStructures import linkedlistiterator as iterlk
 from DISClib.ADT import map as m
 import datetime
+import time
 assert config
 
 """
@@ -184,8 +186,27 @@ def getPastAccidents(analyzer, date):
     Retorna el numero de crimenes en un antes de una fecha.
     """
     lst = om.keys(analyzer['datePast'], om.minKey(analyzer['datePast']), date)
-    print(lst)
+    
     return lst
+
+def mostAccInDate (lista):
+    iterator = iterlk.newIterator(lista)
+    most = time.strftime('%Y-%m-%d',lt.firstElement(lista))
+    lastcounter = 0
+    counter = 0
+    while iterlk.hasNext(iterator):
+        element = iterlk.next(iterator)
+        elementr = time.strftime('%Y-%m-%d', element)
+        if elementr == time.strftime('%Y-%m-%d', iterlk.next(iterator)):
+            counter +=1
+            
+        if elementr != time.strftime('%Y-%m-%d', iterlk.next(iterator)):
+            lastcounter = counter
+            counter = 0
+            
+        if counter > lastcounter:
+            most = elementr
+    return most
 
 
 # ==============================

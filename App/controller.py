@@ -60,7 +60,19 @@ def loadData(analyzer, accidentsfile):
     input_file = csv.DictReader(open(accidentsfile, encoding="utf-8"),
                                 delimiter=",")
     for accident in input_file:
-        model.addAccident(analyzer, accident)
+        dato = {
+            'ID': accident['ID'],
+            'Severity': accident['Severity'],
+            'Start_Time': accident['Start_Time'],
+            'End_Time': accident['End_Time'],
+            'State': accident['State'],
+            'Start_Lat': accident['Start_Lat'],
+            'Start_Lng': accident['Start_Lng'],
+            'End_Lat': accident['End_Lat'],
+            'End_Lng': accident['End_Lng'],
+        }
+        model.addAccident(analyzer, dato)
+
     return analyzer
 
 
@@ -83,8 +95,12 @@ def getPastAccidents(analyzer, fecha):
     """
     fecha00 = fecha + " 00:00:00"
     fechaf = datetime.datetime.strptime(fecha00, '%Y-%m-%d %H:%M:%S')
-    
+
     return model.getPastAccidents(analyzer, fechaf.utctimetuple())
+
+def mostAccInDate(lista):
+
+    return model.mostAccInDate(lista)
 
 def accidentsSize(analyzer):
     """
