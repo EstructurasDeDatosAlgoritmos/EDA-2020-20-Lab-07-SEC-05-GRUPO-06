@@ -24,6 +24,11 @@ import config as cf
 from App import model
 import datetime
 import csv
+from DISClib.DataStructures import listiterator as it
+from DISClib.ADT import list as lt 
+from DISClib.DataStructures import mapentry as me
+from DISClib.ADT import map as m
+
 
 """
 El controlador se encarga de mediar entre la vista y el modelo.
@@ -44,7 +49,6 @@ def init():
     """
     analyzer = model.newAnalyzer()
     return analyzer
-    return None
 
 
 # ___________________________________________________
@@ -60,8 +64,21 @@ def loadData(analyzer, accidentsfile):
     input_file = csv.DictReader(open(accidentsfile, encoding="utf-8"),
                                 delimiter=",")
     for accident in input_file:
-        model.addAccident(analyzer, accident)
+        dato = {
+            'ID': accident['ID'],
+            'Severity': accident['Severity'],
+            'Start_Time': accident['Start_Time'],
+            'End_Time': accident['End_Time'],
+            'State': accident['State'],
+            'Start_Lat': accident['Start_Lat'],
+            'Start_Lng': accident['Start_Lng'],
+            'End_Lat': accident['End_Lat'],
+            'End_Lng': accident['End_Lng'],
+        }
+        model.addAccident(analyzer, dato)
+
     return analyzer
+
 
 
 # ___________________________________________________
@@ -74,8 +91,18 @@ def getAccidentsByRange(analyzer, initialDate, finalDate):
     """
     initialDate = datetime.datetime.strptime(initialDate, '%Y-%m-%d')
     finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
-    return model.getAccidentsByRange(analyzer, initialDate.date(),
+    lst_accidents= model.getAccidentsByRange(analyzer, initialDate.date(),
                                   finalDate.date())
+    return lst_accidents
+
+
+def cont_accidents(lst):
+    return(model.cont_accidents(lst))
+def severities(lst):
+    return (model.severities(lst))
+def getMaxSeverity(lst,hash_t):
+    return model.getMaxSeverity(lst,hash_t)
+        
 
 def accidentsSize(analyzer):
     """

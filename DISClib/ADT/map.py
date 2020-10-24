@@ -37,7 +37,7 @@ assert config
 """
 
 
-def newMap(numelements=17,
+def newMap(numelements=100,
            prime=109345121,
            maptype='CHAINING',
            loadfactor=0.5,
