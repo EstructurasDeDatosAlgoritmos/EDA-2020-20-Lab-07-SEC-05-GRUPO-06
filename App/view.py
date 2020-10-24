@@ -21,6 +21,7 @@
  """
 
 import sys
+sys.setrecursionlimit(10**6) 
 import config
 from DISClib.ADT import list as lt
 from App import controller
@@ -41,6 +42,7 @@ operación seleccionada.
 
 
 accidentsfile = 'us_accidents_small.csv'
+#accidentsfile = 'US_Accidents_Dec19.csv'
 
 
 
@@ -55,8 +57,8 @@ def printMenu():
     print("Bienvenido")
     print("1- Inicializar Analizador")
     print("2- Cargar información de accidentes")
-    print("3- Requerimento 1")
-    print("4- Requerimento 2")
+    print("3- Conocer los accidentes en una fecha")
+    print("4- Conocer los accidentes anteriores a una fecha")
     print("5- Requerimiento 3")
     print("0- Salir")
     print("*******************************************")
@@ -93,7 +95,14 @@ while True:
         print(m.get(tabla,"2"))
         print(m.get(tabla,"3"))
         print(m.get(tabla,"4"))
-
+    elif int(inputs[0]) == 4:
+        print("\nBuscando accidentes antes de la fecha: ")
+        Date = input("Fecha (YYYY-MM-DD): ")
+        lst = controller.getPastAccidents(cont, Date)
+        most = controller.mostAccInDate(lst)
+        total_acc = lt.size(lst)
+        print("\nTotal de accidentes antes de la fecha: " + str(lt.size(lst)))
+        print("\nFecha con mas accidentes: " + str(most))
     elif int(inputs[0]) == 5:
         print("\nRequerimiento No 3 del reto 3: ")
         print("\nBuscando accidentes en una fecha: ")
@@ -107,11 +116,6 @@ while True:
         lstValues=m.valueSet(hash_t)
         key_value=controller.getMaxSeverity(lstValues,hash_t)
         print("el mayor grado de severidad fue "+key_value[0]+" con "+str(key_value[1])+" accidentes")
-
-
-
-        
-
 
     else:
         sys.exit(0)

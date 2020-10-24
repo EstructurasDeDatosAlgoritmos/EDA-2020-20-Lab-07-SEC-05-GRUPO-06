@@ -102,7 +102,19 @@ def severities(lst):
     return (model.severities(lst))
 def getMaxSeverity(lst,hash_t):
     return model.getMaxSeverity(lst,hash_t)
-        
+  
+def getPastAccidents(analyzer, fecha):
+    """
+    Retorna el total de crimenes en un rango de fechas
+    """
+    fecha00 = fecha + " 00:00:00"
+    fechaf = datetime.datetime.strptime(fecha00, '%Y-%m-%d %H:%M:%S')
+
+    return model.getPastAccidents(analyzer, fechaf.utctimetuple())
+
+def mostAccInDate(lista):
+
+    return model.mostAccInDate(lista)
 
 def accidentsSize(analyzer):
     """
