@@ -23,8 +23,10 @@ import config
 from DISClib.ADT import list as lt
 from DISClib.ADT import orderedmap as om
 from DISClib.DataStructures import mapentry as me
+from DISClib.DataStructures import linkedlistiterator as iterlk
 from DISClib.ADT import map as m
 import datetime
+import time
 assert config
 
 """
@@ -47,11 +49,14 @@ def newAnalyzer():
     Retorna el analizador inicializado.
     """
     analyzer = {'accidents': None,
-                'dateIndex': None
+                'dateIndex': None,
+                'datePast': None
                 }
 
     analyzer['accidents'] = lt.newList('SINGLE_LINKED', compareIds)
     analyzer['dateIndex'] = om.newMap(omaptype='BST',
+                                      comparefunction=compareDates)
+    analyzer['datePast'] = om.newMap(omaptype='BST',
                                       comparefunction=compareDates)
     return analyzer
 
@@ -63,6 +68,7 @@ def addAccident(analyzer, accident):
     """
     lt.addLast(analyzer['accidents'], accident)
     updateDateIndex(analyzer['dateIndex'], accident)
+    addAccidentR2(analyzer['datePast'], accident)
     return analyzer
 
 def updateDateIndex(map, accident):
@@ -128,6 +134,15 @@ def newSeverityEntry(severitygrp, accident):
     seventry['lstseverities'] = lt.newList('SINGLELINKED', compareSeverities)
     return seventry
 
+def addAccidentR2 (map, accident):
+    occurreddate = accident['End_Time']
+    AccID = accident['ID']
+    accidentdate = datetime.datetime.strptime(occurreddate, '%Y-%m-%d %H:%M:%S')
+    
+    om.put(map, accidentdate.utctimetuple(), AccID)
+    return 
+
+
 # ==============================
 # Funciones de consulta
 # ==============================
@@ -165,6 +180,33 @@ def getAccidentsByRange(analyzer, initialDate, finalDate):
     """
     lst = om.values(analyzer['dateIndex'], initialDate, finalDate)
     return lst
+
+def getPastAccidents(analyzer, date):
+    """
+    Retorna el numero de crimenes en un antes de una fecha.
+    """
+    lst = om.keys(analyzer['datePast'], om.minKey(analyzer['datePast']), date)
+    
+    return lst
+
+def mostAccInDate (lista):
+    iterator = iterlk.newIterator(lista)
+    most = time.strftime('%Y-%m-%d',lt.firstElement(lista))
+    lastcounter = 0
+    counter = 0
+    while iterlk.hasNext(iterator):
+        element = iterlk.next(iterator)
+        elementr = time.strftime('%Y-%m-%d', element)
+        if elementr == time.strftime('%Y-%m-%d', iterlk.next(iterator)):
+            counter +=1
+            
+        if elementr != time.strftime('%Y-%m-%d', iterlk.next(iterator)):
+            lastcounter = counter
+            counter = 0
+            
+        if counter > lastcounter:
+            most = elementr
+    return most
 
 
 # ==============================

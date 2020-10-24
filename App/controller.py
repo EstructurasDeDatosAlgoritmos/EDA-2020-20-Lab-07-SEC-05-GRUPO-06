@@ -60,7 +60,19 @@ def loadData(analyzer, accidentsfile):
     input_file = csv.DictReader(open(accidentsfile, encoding="utf-8"),
                                 delimiter=",")
     for accident in input_file:
-        model.addAccident(analyzer, accident)
+        dato = {
+            'ID': accident['ID'],
+            'Severity': accident['Severity'],
+            'Start_Time': accident['Start_Time'],
+            'End_Time': accident['End_Time'],
+            'State': accident['State'],
+            'Start_Lat': accident['Start_Lat'],
+            'Start_Lng': accident['Start_Lng'],
+            'End_Lat': accident['End_Lat'],
+            'End_Lng': accident['End_Lng'],
+        }
+        model.addAccident(analyzer, dato)
+
     return analyzer
 
 
@@ -76,6 +88,19 @@ def getAccidentsByRange(analyzer, initialDate, finalDate):
     finalDate = datetime.datetime.strptime(finalDate, '%Y-%m-%d')
     return model.getAccidentsByRange(analyzer, initialDate.date(),
                                   finalDate.date())
+  
+def getPastAccidents(analyzer, fecha):
+    """
+    Retorna el total de crimenes en un rango de fechas
+    """
+    fecha00 = fecha + " 00:00:00"
+    fechaf = datetime.datetime.strptime(fecha00, '%Y-%m-%d %H:%M:%S')
+
+    return model.getPastAccidents(analyzer, fechaf.utctimetuple())
+
+def mostAccInDate(lista):
+
+    return model.mostAccInDate(lista)
 
 def accidentsSize(analyzer):
     """
